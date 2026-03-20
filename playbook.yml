@@ -1,0 +1,138 @@
+---
+- name: Forbirdden Fedora
+  hosts: localhost
+  become: yes
+
+  tasks:
+
+    - name: Install RPM Fusion
+      dnf:
+        name:
+          - "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+          - "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+        state: present
+        disable_gpg_check: yes
+
+    - name: Install drivers
+      dnf:
+        name:
+          - linux-firmware
+          - mesa-vulkan-drivers
+          - mesa-vulkan-drivers.i686
+          - kernel-modules-extra
+        state: present
+
+    - name: Install rpms
+      dnf:
+        name:
+          - flatpak
+          - gnome-shell        
+          - gdm                  
+          - nautilus             
+          - gnome-terminal       
+          - gnome-control-center
+          - gnome-software 
+          - nemo
+          - nemo-extensions
+          - gparted
+          - steam
+          - pipx
+          - curl
+          - unzip
+          - realpath
+          - dirname
+        state: present
+
+    - name: Enable GDM
+      systemd:
+        name: gdm
+        enabled: yes
+        state: started
+
+    - name: GDM by default
+      file:
+        src: /lib/systemd/system/graphical.target
+        dest: /etc/systemd/system/default.target
+        state: link
+
+    - name: Add Flatpak repo
+      community.general.flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+        method: system
+
+    - name: Install Flatpaks
+      community.general.flatpak:
+        method: system
+        name: 
+          - com.discordapp.Discord
+          - com.google.Chrome
+          - org.vinegarhq.Sober
+          - com.usebottles.bottles
+          - org.telegram.desktop
+          - org.videolan.VLC
+          - com.github.tchx84.Flatseal
+          - com.obsproject.Studio
+          - com.visualstudio.code
+          - com.mattjakeman.ExtensionManager
+          - org.qbittorrent.qBittorrent
+          - org.libreoffice.LibreOffice
+          - com.protonvpn.www
+          - io.github.flattool.Warehouse
+          - org.torproject.torbrowser-launcher
+          - io.missioncenter.MissionCenter
+          - com.anydesk.Anydesk
+          - im.riot.Riot
+          - io.github.thetumultuousunicornofdarkness.cpu-x
+          - dev.lizardbyte.app.Sunshine
+          - org.virt_manager.virt-manager
+          - io.github.shiftey.Desktop
+          - org.kde.kate
+          - org.raspberrypi.rpi-imager
+        state: present
+
+    - name: Install wheels
+      become: no
+      shell: |
+        pipx install gnome-extensions-cli yt-dlp --force
+        pipx ensurepath
+        source ~/.bashrc
+
+    - name: Install GNOME extensions
+      become: no
+      shell: |
+        $HOME/.local/bin/gnome-extensions-cli install dash-to-panel@jderose9.github.com
+        $HOME/.local/bin/gnome-extensions-cli install appindicatorsupport@rgcjonas.gmail.com
+        $HOME/.local/bin/gnome-extensions-cli install arcmenu@arcmenu.com
+        $HOME/.local/bin/gnome-extensions-cli install ding@rastersoft.com
+        $HOME/.local/bin/gnome-extensions-cli install gsconnect@andyholmes.github.io
+
+    - name: Install OhMyPosh
+      shell: |
+        curl -s https://ohmyposh.dev/install.sh | bash -s
+
+    - name: Add OhMyPosh to bashrc
+      become: no
+      lineinfile:
+        path: "~/.bashrc"
+        line: 'eval "$(oh-my-posh init bash --config agnoster)"' 
+        state: present
+        insertafter: EOF
+
+    - name: Install Font for OhMyPosh
+      shell: |
+        mkdir -p ~/.local/share/fonts
+        cd ~/.local/share/fonts
+        curl -fLO https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Ubuntu.zip
+        unzip -o Ubuntu.zip
+        rm Ubuntu.zip
+        fc-cache -fv
+      become: no
+
+    - name: Install Vencord
+      shell: |
+        sh -c "$(curl -sS https://vencord.dev/install.sh)"
+
+    - name: Reboot
+      reboot:
