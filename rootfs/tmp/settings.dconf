@@ -58,13 +58,6 @@ sort-order=['org.gnome.Settings.desktop', 'org.gnome.Contacts.desktop', 'org.gno
 [org/gnome/desktop/wm/preferences]
 button-layout='appmenu:minimize,maximize,close'
 
-[org/gnome/evolution-data-server]
-migrated=true
-
-[org/gnome/login-screen]
-enable-fingerprint-authentication=false
-enable-smartcard-authentication=false
-
 [org/gnome/mutter]
 overlay-key='Super_L'
 
@@ -146,10 +139,6 @@ name='fedora'
 
 [org/gnome/shell/extensions/gtk4-ding]
 icon-size='small'
-
-[org/gnome/software]
-check-timestamp=int64 1774080306
-first-run=false
 
 [org/gnome/terminal/legacy]
 new-terminal-mode='tab'

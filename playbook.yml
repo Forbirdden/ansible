@@ -24,31 +24,29 @@
           - mesa-va-drivers.i686 
         state: present
 
-    - name: Install rpms
+    - name: Install RPMs
       dnf:
         name:
           - flatpak
-          - gnome-shell        
-          - gdm                  
-          - nautilus             
-          - gnome-terminal       
+          - gnome-shell
+          - gdm
+          - nautilus
+          - gnome-terminal
           - gnome-control-center
           - gnome-software
-	  - gnome-tweaks
+          - gnome-tweaks
           - nemo
           - nemo-extensions
-          - gparted
-          - steam
           - pipx
           - curl
           - unzip
-	  - dbus-x11
+          - dbus-x11
         state: present
 
     - name: Enable GDM
       systemd:
         name: gdm
-	enabled: yes
+        enabled: yes
 
     - name: Set GDM as default target
       file:
@@ -93,7 +91,7 @@
           - org.raspberrypi.rpi-imager
         state: present
 
-    - name: Install wheels
+    - name: Install WHLs
       become: no
       shell: |
         pipx install gnome-extensions-cli yt-dlp --force
@@ -110,7 +108,7 @@
         - ding@rastersoft.com
         - gsconnect@andyholmes.github.io
 
-    - name: Load rootfs directory into root
+    - name: Recursively copy rootfs directory into root
       ansible.builtin.copy:
         src: "./rootfs/"
         dest: "/"
