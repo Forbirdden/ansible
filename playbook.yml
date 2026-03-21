@@ -17,9 +17,11 @@
       dnf:
         name:
           - linux-firmware
+          - kernel-modules-extra
           - mesa-vulkan-drivers
           - mesa-vulkan-drivers.i686
-          - kernel-modules-extra
+      	  - mesa-va-drivers
+          - mesa-va-drivers.i686 
         state: present
 
     - name: Install rpms
@@ -31,7 +33,8 @@
           - nautilus             
           - gnome-terminal       
           - gnome-control-center
-          - gnome-software 
+          - gnome-software
+	  - gnome-tweaks
           - nemo
           - nemo-extensions
           - gparted
@@ -39,17 +42,15 @@
           - pipx
           - curl
           - unzip
-          - realpath
-          - dirname
+	  - dbus-x11
         state: present
 
     - name: Enable GDM
       systemd:
         name: gdm
-        enabled: yes
-        state: started
+	enabled: yes
 
-    - name: GDM by default
+    - name: Set GDM as default target
       file:
         src: /lib/systemd/system/graphical.target
         dest: /etc/systemd/system/default.target
@@ -97,42 +98,31 @@
       shell: |
         pipx install gnome-extensions-cli yt-dlp --force
         pipx ensurepath
-        source ~/.bashrc
 
     - name: Install GNOME extensions
       become: no
       shell: |
-        $HOME/.local/bin/gnome-extensions-cli install dash-to-panel@jderose9.github.com
-        $HOME/.local/bin/gnome-extensions-cli install appindicatorsupport@rgcjonas.gmail.com
-        $HOME/.local/bin/gnome-extensions-cli install arcmenu@arcmenu.com
-        $HOME/.local/bin/gnome-extensions-cli install ding@rastersoft.com
-        $HOME/.local/bin/gnome-extensions-cli install gsconnect@andyholmes.github.io
+        dbus-run-session ~/.local/bin/gnome-extensions-cli install {{ item }}
+      loop:
+        - dash-to-panel@jderose9.github.com
+        - appindicatorsupport@rgcjonas.gmail.com
+        - arcmenu@arcmenu.com
+        - ding@rastersoft.com
+        - gsconnect@andyholmes.github.io
 
-    - name: Install OhMyPosh
-      shell: |
-        curl -s https://ohmyposh.dev/install.sh | bash -s
+    - name: Load rootfs directory into root
+      ansible.builtin.copy:
+        src: "./rootfs/"
+        dest: "/"
 
-    - name: Add OhMyPosh to bashrc
+    - name: Load configuration
       become: no
-      lineinfile:
-        path: "~/.bashrc"
-        line: 'eval "$(oh-my-posh init bash --config agnoster)"' 
-        state: present
-        insertafter: EOF
-
-    - name: Install Font for OhMyPosh
       shell: |
-        mkdir -p ~/.local/share/fonts
-        cd ~/.local/share/fonts
-        curl -fLO https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Ubuntu.zip
-        unzip -o Ubuntu.zip
-        rm Ubuntu.zip
-        fc-cache -fv
-      become: no
-
-    - name: Install Vencord
-      shell: |
-        sh -c "$(curl -sS https://vencord.dev/install.sh)"
+        dbus-run-session dconf load / < /tmp/settings.dconf
 
     - name: Reboot
-      reboot:
+      shell: "sleep 5 && reboot"
+      async: 1
+      poll: 0
+      ignore_errors: true
+
