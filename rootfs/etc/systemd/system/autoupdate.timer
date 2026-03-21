@@ -2,7 +2,7 @@
 Description=Auto Update Timer
 
 [Timer]
-OnBootSec=1min
+OnBootSec=2min
 OnUnitActiveSec=3h
 Persistent=true
 
