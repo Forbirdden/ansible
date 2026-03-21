@@ -5,6 +5,16 @@
 
   tasks:
 
+    - name: Disable SELinux
+      lineinfile:
+        path: /etc/selinux/config
+        regexp: '^SELINUX='
+        line: 'SELINUX=disabled'
+
+    - name: Get AppImageLauncher RPM URL
+      set_fact:
+        appimglaunch: "{{ (lookup('url', 'https://api.github.com/repos/TheAssassin/AppImageLauncher/releases/tags/continuous', split_lines=False) | from_json).assets | selectattr('name', 'search', 'x86_64\\.rpm$') | map(attribute='browser_download_url') | first }}"
+
     - name: Install RPM Fusion
       dnf:
         name:
@@ -12,11 +22,6 @@
           - "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm"
         state: present
         disable_gpg_check: yes
-
-    - name: Upgrade all packages
-      dnf:
-        name: "*"
-        state: latest
 
     - name: Install drivers
       dnf:
@@ -33,6 +38,7 @@
     - name: Install RPMs
       dnf:
         name:
+          - fastfetch
           - flatpak
           - gnome-shell
           - gdm
@@ -43,30 +49,19 @@
           - gnome-tweaks
           - nemo
           - nemo-extensions
+          - "{{ appimglaunch }}"
           - steam
+          - gamemode
+          - gamemode.i686
           - pipx
           - openssl
           - curl
+          - wget
           - unzip
           - dbus-x11
+          - plymouth
+          - plymouth-theme-spinner
         state: latest
-
-    - name: Enable GDM
-      systemd:
-        name: gdm
-        enabled: yes
-
-    - name: Enable fstrim.timer
-      systemd:
-        name: fstrim.timer
-        enabled: yes
-        state: started
-
-    - name: Set graphical.target as default
-      systemd:
-        name: graphical.target
-        enabled: yes
-        masked: no
 
     - name: Add Flatpak repo
       community.general.flatpak_remote:
@@ -80,7 +75,7 @@
         method: system
         name: 
           - com.discordapp.Discord
-          - com.google.Chrome
+          - org.mozilla.firefox
           - org.vinegarhq.Sober
           - com.usebottles.bottles
           - org.telegram.desktop
@@ -120,7 +115,7 @@
         - appindicatorsupport@rgcjonas.gmail.com
         - arcmenu@arcmenu.com
         - gsconnect@andyholmes.github.io
-        - gtk4-ding@smedius.gitlab.com
+        - ding@rastersoft.com
         - blur-my-shell@aunetx
         - user-theme@gnome-shell-extensions.gcampax.github.com
 
@@ -149,7 +144,45 @@
         enabled: yes
         state: started
 
-    - name: Reboot
+    - name: Enable Plymouth and disable SELinux in GRUB
+      lineinfile:
+        path: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX="(.*)"'
+        line: 'GRUB_CMDLINE_LINUX="\1 rhgb quiet selinux=0"'
+        backrefs: yes
+
+    - name: Update GRUB configuration
+      shell: grub2-mkconfig -o /boot/grub2/grub.cfg
+
+    - name: Enable GDM
+      systemd:
+        name: gdm
+        enabled: yes
+
+    - name: Set graphical.target as default
+      systemd:
+        name: graphical.target
+        enabled: yes
+        masked: no
+
+    - name: Enable fstrim.timer
+      systemd:
+        name: fstrim.timer
+        enabled: yes
+        state: started
+
+    - name: Download Vencord Installer
+      shell: curl -O /home/emil/Документы/vencord.sh https://vencord.dev/install.sh
+
+    - name: Make Vencord Installer executable
+      file:
+        path: /home/emil/Документы/vencord.sh
+        mode: '0755'
+
+    - name: Download PrismLauncher
+      shell: curl -O /home/emil/Загрузки/PrismLauncher-Linux-x86_64.AppImage https://github.com/Diegiwg/PrismLauncher-Cracked/releases/latest/download/PrismLauncher-Linux-x86_64.AppImage
+
+    - name: Reboot 
       shell: "sleep 5 && reboot"
       async: 1
       poll: 0

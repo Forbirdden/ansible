@@ -1,70 +1,69 @@
 [org/gnome/control-center]
 last-panel='network'
 window-state=(980, 640, false)
-
-
-[org/gnome/desktop/app-folders/folders/Pardus]
-categories=['X-Pardus-Apps']
-name='X-Pardus-Apps.directory'
-translate=true
-
+ 
 [org/gnome/desktop/app-folders/folders/System]
 apps=['org.freedesktop.MalcontentControl.desktop']
 name='X-GNOME-Shell-System.directory'
 translate=true
-
+ 
 [org/gnome/desktop/app-folders/folders/Utilities]
 name='X-GNOME-Shell-Utilities.directory'
 translate=true
-
+ 
 [org/gnome/desktop/break-reminders/eyesight]
 play-sound=true
-
+ 
 [org/gnome/desktop/break-reminders/movement]
 duration-seconds=uint32 300
 interval-seconds=uint32 1800
 play-sound=true
-
+ 
 [org/gnome/desktop/input-sources]
 mru-sources=[('xkb', 'us'), ('xkb', 'ru')]
 sources=[('xkb', 'us'), ('xkb', 'ru')]
 xkb-options=['grp:alt_shift_toggle']
-
+ 
 [org/gnome/desktop/notifications]
 application-children=['org-gnome-shell-extensions-gsconnect', 'org-gnome-software', 'io-missioncenter-missioncenter']
-
+ 
 [org/gnome/desktop/notifications/application/io-missioncenter-missioncenter]
 application-id='io.missioncenter.MissionCenter.desktop'
-
+ 
 [org/gnome/desktop/notifications/application/org-gnome-shell-extensions-gsconnect]
 application-id='org.gnome.Shell.Extensions.GSConnect.desktop'
-
+ 
 [org/gnome/desktop/notifications/application/org-gnome-software]
 application-id='org.gnome.Software.desktop'
-
+ 
 [org/gnome/desktop/peripherals/touchpad]
 two-finger-scrolling-enabled=true
-
+ 
 [org/gnome/desktop/search-providers]
 sort-order=['org.gnome.Settings.desktop', 'org.gnome.Contacts.desktop', 'org.gnome.Nautilus.desktop']
-
+ 
 [org/gnome/desktop/wm/preferences]
 button-layout='appmenu:minimize,maximize,close'
-
+ 
 [org/gnome/mutter]
 overlay-key='Super_L'
-
+ 
 [org/gnome/nautilus/preferences]
+default-folder-viewer='icon-view'
 migrated-gtk-settings=true
-
+ 
+[org/gnome/nautilus/window-state]
+initial-size=(890, 550)
+ 
 [org/gnome/settings-daemon/plugins/color]
 night-light-schedule-automatic=false
-
+ 
 [org/gnome/shell]
-app-picker-layout=[{'org.gnome.Terminal.desktop': <{'position': <0>}>, 'nemo.desktop': <{'position': <1>}>, 'com.discordapp.Discord.desktop': <{'position': <2>}>, 'gparted.desktop': <{'position': <3>}>, 'org.gnome.Settings.desktop': <{'position': <4>}>, 'System': <{'position': <5>}>, 'org.gnome.Tour.desktop': <{'position': <6>}>}]
-enabled-extensions=['arcmenu@arcmenu.com', 'gsconnect@andyholmes.github.io', 'appindicatorsupport@rgcjonas.gmail.com', 'dash-to-panel@jderose9.github.com', 'blur-my-shell@aunetx', 'gtk4-ding@smedius.gitlab.com']
+app-picker-layout=[{'org.gnome.Terminal.desktop': <{'position': <0>}>, 'nemo.desktop': <{'position': <1>}>, 'org.videolan.VLC.desktop': <{'position': <2>}>, 'org.gnome.Settings.desktop': <{'position': <3>}>, 'System': <{'position': <4>}>, 'org.gnome.Tour.desktop': <{'position': <5>}>, 'im.riot.Riot.desktop': <{'position': <6>}>, 'com.github.tchx84.Flatseal.desktop': <{'position': <7>}>, 'com.google.Chrome.desktop': <{'position': <8>}>, 'org.kde.kate.desktop': <{'position': <9>}>, 'com.obsproject.Studio.desktop': <{'position': <10>}>, 'org.qbittorrent.qBittorrent.desktop': <{'position': <11>}>, 'org.vinegarhq.Sober.desktop': <{'position': <12>}>, 'steam.desktop': <{'position': <13>}>, 'com.mattjakeman.ExtensionManager.desktop': <{'position': <14>}>, 'org.gnome.tweaks.desktop': <{'position': <15>}>, 'org.gnome.Nautilus.desktop': <{'position': <16>}>, 'org.gnome.Software.desktop': <{'position': <17>}>}]
+enabled-extensions=['arcmenu@arcmenu.com', 'gsconnect@andyholmes.github.io', 'appindicatorsupport@rgcjonas.gmail.com', 'dash-to-panel@jderose9.github.com', 'blur-my-shell@aunetx', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'ding@rastersoft.com']
+favorite-apps=['org.mozilla.firefox.desktop', 'com.discordapp.Discord.desktop', 'org.telegram.desktop.desktop', 'com.visualstudio.code.desktop']
 welcome-dialog-last-shown-version='49.5'
-
+ 
 [org/gnome/shell/extensions/arcmenu]
 application-shortcuts=[{'id': 'org.gnome.Settings.desktop'}, {'id': 'org.gnome.tweaks.desktop', 'name': 'Gnome Tweaks'}, {'id': 'com.mattjakeman.ExtensionManager.desktop', 'name': 'Расширения'}, {'name': 'Разделитель', 'icon': 'list-remove-symbolic', 'id': 'ArcMenu_Separator'}, {'id': 'org.gnome.Terminal.desktop'}, {'id': 'nemo.desktop'}]
 context-menu-items=[{'id': 'ArcMenu_Settings', 'name': 'ArcMenu Settings', 'icon': 'ArcMenu_ArcMenuIcon'}, {'id': 'ArcMenu_PanelExtensionSettings', 'name': 'Panel Extension Settings', 'icon': 'application-x-addon-symbolic'}, {'id': 'ArcMenu_Separator', 'name': 'Separator', 'icon': 'list-remove-symbolic'}, {'id': 'io.missioncenter.MissionCenter.desktop'}]
@@ -79,34 +78,34 @@ menu-item-hover-bg-color='rgba(18,51,84,0.08)'
 menu-item-hover-fg-color='rgb(18,51,84)'
 menu-separator-color='rgba(18,51,84,0.15)'
 override-menu-theme=true
-pinned-apps=[{'id': 'org.gnome.Terminal.desktop'}, {'id': 'com.discordapp.Discord.desktop'}, {'id': 'com.google.Chrome.desktop'}, {'id': 'org.vinegarhq.Sober.desktop'}]
+pinned-apps=[{'id': 'org.mozilla.firefox.desktop'}, {'id': 'com.discordapp.Discord.desktop'}, {'id': 'org.telegram.desktop.desktop'}, {'id': 'im.riot.Riot.desktop'}, {'id': 'org.gnome.Terminal.desktop'}, {'id': 'com.visualstudio.code.desktop'}, {'id': 'com.obsproject.Studio.desktop'}, {'id': 'steam.desktop'}, {'id': 'org.qbittorrent.qBittorrent.desktop'}, {'id': 'org.kde.kate.desktop'}, {'id': 'org.videolan.VLC.desktop'}, {'id': 'org.vinegarhq.Sober.desktop'}, {'id': 'com.github.tchx84.Flatseal.desktop'}]
 prefs-visible-page=0
-recently-installed-apps=['com.mattjakeman.ExtensionManager.desktop', 'com.google.Chrome.desktop', 'org.vinegarhq.Sober.desktop', 'com.github.tchx84.Flatseal.desktop', 'com.desktop.ding.desktop']
+recently-installed-apps=['com.mattjakeman.ExtensionManager.desktop', 'com.google.Chrome.desktop', 'org.vinegarhq.Sober.desktop', 'com.github.tchx84.Flatseal.desktop', 'com.desktop.ding.desktop', 'org.mozilla.firefox.desktop', 'io.missioncenter.MissionCenter.desktop']
 search-entry-border-radius=(true, 25)
 update-notifier-project-version=70
-
+ 
 [org/gnome/shell/extensions/blur-my-shell]
 settings-version=2
-
+ 
 [org/gnome/shell/extensions/blur-my-shell/appfolder]
 brightness=0.59999999999999998
 sigma=30
-
+ 
 [org/gnome/shell/extensions/blur-my-shell/dash-to-dock]
 blur=true
 brightness=0.59999999999999998
 sigma=30
 static-blur=true
 style-dash-to-dock=0
-
+ 
 [org/gnome/shell/extensions/blur-my-shell/panel]
 brightness=0.59999999999999998
 sigma=30
-
+ 
 [org/gnome/shell/extensions/blur-my-shell/window-list]
 brightness=0.59999999999999998
 sigma=30
-
+ 
 [org/gnome/shell/extensions/dash-to-panel]
 animate-appicon-hover=true
 animate-appicon-hover-animation-extent={'RIPPLE': 4, 'PLANK': 4, 'SIMPLE': 1}
@@ -124,39 +123,41 @@ trans-panel-opacity=0.35000000000000003
 trans-use-custom-bg=true
 trans-use-custom-opacity=true
 window-preview-title-position='TOP'
-
-[org/gnome/shell/extensions/gsconnect]
-missing-openssl=true
-name='fedora'
-
-[org/gnome/shell/extensions/gtk4-ding]
+ 
+[org/gnome/shell/extensions/ding]
+check-x11wayland=true
 icon-size='small'
-
+ 
+[org/gnome/shell/extensions/gsconnect]
+missing-openssl=false
+name='fedora'
+ 
 [org/gnome/terminal/legacy]
 new-terminal-mode='tab'
-
+ 
 [org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
 background-color='rgb(23,20,33)'
 default-size-columns=90
 default-size-rows=24
 foreground-color='rgb(208,207,204)'
 use-theme-colors=false
-
+ 
 [org/gnome/tweaks]
 show-extensions-notice=false
-
+ 
 [org/gtk/gtk4/settings/color-chooser]
 selected-color=(true, 0.87058824300765991, 0.86666667461395264, 0.85490196943283081, 1.0)
-
+ 
 [org/gtk/gtk4/settings/file-chooser]
-show-hidden=false
+show-hidden=true
 sort-directories-first=false
-
+ 
 [org/nemo/preferences]
 show-hidden-files=true
-
+ 
 [org/nemo/window-state]
 geometry='800x550+26+23'
 maximized=false
 sidebar-bookmark-breakpoint=5
 start-with-sidebar=true
+ 
