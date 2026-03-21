@@ -13,6 +13,11 @@
         state: present
         disable_gpg_check: yes
 
+    - name: Upgrade all packages
+      dnf:
+        name: "*"
+        state: latest
+
     - name: Install drivers
       dnf:
         name:
@@ -20,9 +25,10 @@
           - kernel-modules-extra
           - mesa-vulkan-drivers
           - mesa-vulkan-drivers.i686
-      	  - mesa-va-drivers
-          - mesa-va-drivers.i686 
-        state: present
+          - mesa-va-drivers-freeworld
+          - mesa-va-drivers-freeworld.i686
+          - mesa-vdpau-drivers-freeworld
+        state: latest
 
     - name: Install RPMs
       dnf:
@@ -37,22 +43,30 @@
           - gnome-tweaks
           - nemo
           - nemo-extensions
+          - steam
           - pipx
+          - openssl
           - curl
           - unzip
           - dbus-x11
-        state: present
+        state: latest
 
     - name: Enable GDM
       systemd:
         name: gdm
         enabled: yes
 
-    - name: Set GDM as default target
-      file:
-        src: /lib/systemd/system/graphical.target
-        dest: /etc/systemd/system/default.target
-        state: link
+    - name: Enable fstrim.timer
+      systemd:
+        name: fstrim.timer
+        enabled: yes
+        state: started
+
+    - name: Set graphical.target as default
+      systemd:
+        name: graphical.target
+        enabled: yes
+        masked: no
 
     - name: Add Flatpak repo
       community.general.flatpak_remote:
@@ -89,7 +103,7 @@
           - io.github.shiftey.Desktop
           - org.kde.kate
           - org.raspberrypi.rpi-imager
-        state: present
+        state: latest
 
     - name: Install WHLs
       become: no
@@ -105,18 +119,35 @@
         - dash-to-panel@jderose9.github.com
         - appindicatorsupport@rgcjonas.gmail.com
         - arcmenu@arcmenu.com
-        - ding@rastersoft.com
         - gsconnect@andyholmes.github.io
+        - gtk4-ding@smedius.gitlab.com
+        - blur-my-shell@aunetx
+        - user-theme@gnome-shell-extensions.gcampax.github.com
 
     - name: Recursively copy rootfs directory into root
       ansible.builtin.copy:
         src: "./rootfs/"
         dest: "/"
 
-    - name: Load configuration
+    - name: Load dconf config
       become: no
       shell: |
         dbus-run-session dconf load / < /tmp/settings.dconf
+
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Make autoupdate.sh executable
+      file:
+        path: /usr/local/bin/autoupdate.sh
+        mode: '0755'
+
+    - name: Enable packages autoupdate at startup and every 3 hours 
+      systemd:
+        name: autoupdate.timer
+        enabled: yes
+        state: started
 
     - name: Reboot
       shell: "sleep 5 && reboot"

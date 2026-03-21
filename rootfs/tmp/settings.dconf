@@ -2,8 +2,6 @@
 last-panel='network'
 window-state=(980, 640, false)
 
-[org/gnome/desktop/app-folders]
-folder-children=['System', 'Utilities', 'YaST', 'Pardus']
 
 [org/gnome/desktop/app-folders/folders/Pardus]
 categories=['X-Pardus-Apps']
@@ -17,11 +15,6 @@ translate=true
 
 [org/gnome/desktop/app-folders/folders/Utilities]
 name='X-GNOME-Shell-Utilities.directory'
-translate=true
-
-[org/gnome/desktop/app-folders/folders/YaST]
-categories=['X-SuSE-YaST']
-name='suse-yast.directory'
 translate=true
 
 [org/gnome/desktop/break-reminders/eyesight]
@@ -69,7 +62,6 @@ night-light-schedule-automatic=false
 
 [org/gnome/shell]
 app-picker-layout=[{'org.gnome.Terminal.desktop': <{'position': <0>}>, 'nemo.desktop': <{'position': <1>}>, 'com.discordapp.Discord.desktop': <{'position': <2>}>, 'gparted.desktop': <{'position': <3>}>, 'org.gnome.Settings.desktop': <{'position': <4>}>, 'System': <{'position': <5>}>, 'org.gnome.Tour.desktop': <{'position': <6>}>}]
-disabled-extensions=['ding@rastersoft.com']
 enabled-extensions=['arcmenu@arcmenu.com', 'gsconnect@andyholmes.github.io', 'appindicatorsupport@rgcjonas.gmail.com', 'dash-to-panel@jderose9.github.com', 'blur-my-shell@aunetx', 'gtk4-ding@smedius.gitlab.com']
 welcome-dialog-last-shown-version='49.5'
 
