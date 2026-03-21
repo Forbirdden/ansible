@@ -173,16 +173,16 @@
         state: started
 
     - name: Download Vencord Installer 
-    get_url:
-      url: https://vencord.dev/install.sh
-      dest: /home/emil/Документы/vencord.sh 
-      mode: '0755'
+      get_url:
+        url: https://vencord.dev/install.sh
+        dest: /home/emil/Документы/vencord.sh 
+        mode: '0755'
 
     - name: Download Prism Launcher
-    get_url:
-      url: https://github.com/Diegiwg/PrismLauncher-Cracked/releases/latest/download/PrismLauncher-Linux-x86_64.AppImage
-      dest: /home/emil/Загрузки/PrismLauncher-Linux-x86_64.AppImage 
-      mode: '0755'
+      get_url:
+        url: https://github.com/Diegiwg/PrismLauncher-Cracked/releases/latest/download/PrismLauncher-Linux-x86_64.AppImage
+        dest: /home/emil/Загрузки/PrismLauncher-Linux-x86_64.AppImage 
+        mode: '0755'
 
     - name: Reboot 
       shell: "sleep 5 && reboot"
