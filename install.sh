@@ -6,6 +6,6 @@ sudo dnf clean all
 
 sudo dnf install -y ansible-core
 
-ansible-galaxy collection install community.general --force
+ansible-galaxy collection install community.general
 
 ansible-playbook playbook.yml --ask-become-pass -i "localhost," -c local
