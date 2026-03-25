@@ -1,0 +1,178 @@
+---
+- name: Workstation
+  hosts: localhost
+  become: yes
+  vars_files:
+    - vars.yml
+
+  tasks:
+
+    - name: Disable SELinux
+      lineinfile:
+        path: /etc/selinux/config
+        regexp: '^SELINUX='
+        line: 'SELINUX=disabled'
+
+    - name: Create some of user directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - /home/emil/Документы
+        - /home/emil/Загрузки
+
+    - name: Get AppImageLauncher RPM URL
+      set_fact:
+        appimglaunch: "{{ (lookup('url', 'https://api.github.com/repos/TheAssassin/AppImageLauncher/releases/tags/continuous', split_lines=False) | from_json).assets | selectattr('name', 'search', 'x86_64\\.rpm$') | map(attribute='browser_download_url') | first }}"
+
+    - name: Install RPM Fusion
+      dnf:
+        name:
+          - "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+          - "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+        state: latest
+        disable_gpg_check: yes
+
+    - name: Install drivers
+      dnf:
+        name: "{{ amd_gpu_rpms }}"
+        state: latest
+
+    - name: Install RPMs
+      dnf:
+        name:
+          - "{{ gnome }}"
+          - "{{ standart_rpms }}"
+          - "{{ appimglaunch }}"
+          - flatpak
+          - steam
+        state: latest
+        disable_gpg_check: true
+
+    - name: Enable irqbalance
+      systemd:
+        name: irqbalance
+        enabled: yes
+        state: started
+
+    - name: Enable GDM
+      systemd:
+        name: gdm
+        enabled: yes
+
+    - name: Set graphical.target as default
+      systemd:
+        name: graphical.target
+        enabled: yes
+        masked: no
+
+    - name: Enable fstrim.timer
+      systemd:
+        name: fstrim.timer
+        enabled: yes
+        state: started
+
+    - name: Download Vencord Installer 
+      become: no
+      get_url:
+        url: https://vencord.dev/install.sh
+        dest: /home/emil/Документы/vencord.sh 
+        mode: '0755'
+
+    - name: Download Prism Launcher
+      become: no
+      get_url:
+        url: https://github.com/Diegiwg/PrismLauncher-Cracked/releases/latest/download/PrismLauncher-Linux-x86_64.AppImage
+        dest: /home/emil/Загрузки/PrismLauncher-Linux-x86_64.AppImage 
+        mode: '0755'
+
+    - name: Add Flatpak repo
+      community.general.flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+        method: system
+
+    - name: Install Flatpaks
+      community.general.flatpak:
+        method: system
+        name: 
+          - "{{ standart_flatpaks }}"
+          - com.discordapp.Discord
+          - org.vinegarhq.Sober
+          - com.usebottles.bottles
+          - org.telegram.desktop
+          - org.libreoffice.LibreOffice
+          - com.protonvpn.www
+          - org.torproject.torbrowser-launcher
+          - com.anydesk.Anydesk
+          - im.riot.Riot
+          - dev.lizardbyte.app.Sunshine
+          - org.virt_manager.virt-manager
+          - io.github.shiftey.Desktop
+          - org.raspberrypi.rpi-imager
+        state: latest
+
+    - name: Install WHLs
+      become: no
+      shell: pipx install gnome-extensions-cli yt-dlp
+
+    - name: Install GNOME extensions
+      become: no
+      shell: dbus-run-session ~/.local/bin/gnome-extensions-cli install {{ item }}
+      loop:
+        - dash-to-panel@jderose9.github.com
+        - appindicatorsupport@rgcjonas.gmail.com
+        - arcmenu@arcmenu.com
+        - gsconnect@andyholmes.github.io
+        - ding@rastersoft.com
+        - blur-my-shell@aunetx
+        - user-theme@gnome-shell-extensions.gcampax.github.com
+
+    - name: Recursively copy rootfs directory into root
+      copy:
+        src: "./rootfs/workstation/"
+        dest: "/"
+
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Make autoupdate.sh executable
+      file:
+        path: /usr/local/bin/autoupdate.sh
+        mode: '0755'
+
+    - name: Enable packages autoupdate at startup and every 3 hours 
+      systemd:
+        name: autoupdate.timer
+        enabled: yes
+        state: started
+
+    - name: Install OhMyPosh
+      become: no
+      shell: curl -s https://ohmyposh.dev/install.sh | bash -s
+
+    - name: Download a Nerd Font
+      become: no
+      shell: oh-my-posh font install UbuntuMono --headless
+
+    - name: Load dconf config
+      become: no
+      shell: dbus-run-session dconf load / < /tmp/settings.dconf
+
+    - name: Enable Plymouth and disable SELinux in GRUB
+      replace:
+        path: /etc/default/grub
+        regexp: '^(GRUB_CMDLINE_LINUX=")((?:(?!rhgb quiet selinux=0).)*)(")$'
+        replace: '\1\2 rhgb quiet selinux=0\3'
+
+    - name: Update GRUB configuration
+      shell: grub2-mkconfig -o /etc/grub2.cfg
+
+    - name: Reboot 
+      shell: "sleep 5 && reboot"
+      async: 1
+      poll: 0
+      ignore_errors: true
+

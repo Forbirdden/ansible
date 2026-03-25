@@ -1,0 +1,8 @@
+MOZ_ENABLE_WAYLAND=1
+MOZ_X11_EGL=1
+GTK_USE_PORTAL=1
+QT_QPA_PLATFORM="wayland;xcb"
+SDL_VIDEODRIVER="wayland,x11"
+LIBVA_DRIVER_NAME=vdpau
+VDPAU_DRIVER=nouveau
+allow_glthread=true 

@@ -1,0 +1,10 @@
+[Context]
+devices=dri
+sockets=x11;wayland;fallback-x11;pulseaudio;
+filesystems=home;
+
+[Session Bus Policy]
+com.feralinteractive.GameMode=talk
+
+[Environment]
+LIBVA_DRIVER_NAME=radeonsi

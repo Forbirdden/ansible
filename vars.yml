@@ -1,0 +1,55 @@
+standart_rpms:
+  - fastfetch
+  - gamemode
+  - gamemode.i686
+  - corectrl
+  - irqbalance
+  - libva-utils
+  - pipx
+  - openssl
+  - curl
+  - wget
+  - unzip
+  - plymouth
+  - plymouth-theme-spinner
+
+standart_flatpaks:
+  - org.mozilla.firefox
+  - org.videolan.VLC
+  - com.github.tchx84.Flatseal
+  - com.obsproject.Studio
+  - com.visualstudio.code
+  - com.mattjakeman.ExtensionManager
+  - org.qbittorrent.qBittorrent
+  - io.github.flattool.Warehouse
+  - io.missioncenter.MissionCenter
+  - io.github.thetumultuousunicornofdarkness.cpu-x
+  - org.kde.kate
+  - org.freedesktop.Platform.GL.default
+  - org.freedesktop.Platform.GL32.default
+  - org.freedesktop.Platform.VAAPI.Intel
+  - org.freedesktop.Platform.ffmpeg-full
+
+amd_gpu_rpms:
+  - linux-firmware
+  - kernel-modules-extra
+  - mesa-vulkan-drivers
+  - mesa-vulkan-drivers.i686
+  - mesa-va-drivers-freeworld
+  - mesa-va-drivers-freeworld.i686
+  - mesa-vdpau-drivers-freeworld
+  - mesa-vdpau-drivers-freeworld.i686   
+  - mesa-dri-drivers
+  - mesa-dri-drivers.i686
+  - dbus-x11
+
+gnome:
+  - gnome-shell
+  - gdm
+  - nautilus
+  - gnome-terminal
+  - gnome-control-center
+  - gnome-software
+  - gnome-tweaks
+  - nemo
+  - nemo-extensions

@@ -1,0 +1,120 @@
+---
+- name: Survivor Laptop
+  hosts: localhost
+  become: yes
+  vars_files:
+    - vars.yml
+
+  tasks:
+
+    - name: Disable SELinux
+      lineinfile:
+        path: /etc/selinux/config
+        regexp: '^SELINUX='
+        line: 'SELINUX=disabled'
+
+    - name: Install RPM Fusion
+      dnf:
+        name:
+          - "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+          - "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+        state: latest
+        disable_gpg_check: yes
+
+    - name: Install drivers
+      dnf:
+        name: "{{ amd_gpu_rpms }}"
+        state: latest
+
+    - name: Install RPMs
+      dnf:
+        name:
+          - "{{ standart_rpms }}"
+          - firefox
+          - xfwm4
+          - xfce4-panel
+          - xfdesktop
+          - xfce4-session
+          - xfce4-settings
+          - xfce4-terminal
+          - xfce4-pulseaudio-plugin
+          - lightdm
+          - lightdm-gtk
+          - lightdm-gtk-greeter-settings
+          - xorg-x11-drv-libinput
+          - libinput
+          - thunar
+          - mousepad
+          - ristretto
+          - pavucontrol
+          - network-manager-applet
+          - "https://vencord.dev/download/vesktop/amd64/rpm"
+        state: latest
+        disable_gpg_check: true
+
+    - name: Enable irqbalance
+      systemd:
+        name: irqbalance
+        enabled: yes
+        state: started
+
+    - name: Enable LightDM
+      systemd:
+        name: lightdm
+        enabled: yes
+
+    - name: Set graphical.target as default
+      systemd:
+        name: graphical.target
+        enabled: yes
+        masked: no
+
+    - name: Enable fstrim.timer
+      systemd:
+        name: fstrim.timer
+        enabled: yes
+        state: started
+
+    - name: Install WHLs
+      become: no
+      shell: pipx install yt-dlp
+
+    - name: Recursively copy rootfs directory into root
+      copy:
+        src: "./rootfs/laptop/"
+        dest: "/"
+
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Make autoupdate.sh executable
+      file:
+        path: /usr/local/bin/autoupdate.sh
+        mode: '0755'
+
+    - name: Enable packages autoupdate at startup and every 3 hours 
+      systemd:
+        name: autoupdate.timer
+        enabled: yes
+        state: started
+
+    - name: Load dconf config
+      become: no
+      shell: dbus-run-session dconf load / < /tmp/settings.dconf
+
+    - name: Enable Plymouth, amdgpu and disable SELinux, radeon in GRUB
+      replace:
+        path: /etc/default/grub
+        regexp: '^(GRUB_CMDLINE_LINUX=")((?:(?!rhgb quiet selinux=0).)*)(")$'
+        replace: '\1\2 rhgb quiet selinux=0 radeon.cik_support=0 amdgpu.cik_support=1\3'
+
+    - name: Update GRUB configuration
+      shell: grub2-mkconfig -o /etc/grub2.cfg
+
+    - name: Reboot 
+      shell: "sleep 5 && reboot"
+      async: 1
+      poll: 0
+      ignore_errors: true
+
